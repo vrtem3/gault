@@ -1,0 +1,11 @@
+[Unit]
+Description=Gault usage identifier retention
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=15min
+Persistent=true
+Unit=Gault-privacy-cleanup.service
+
+[Install]
+WantedBy=timers.target

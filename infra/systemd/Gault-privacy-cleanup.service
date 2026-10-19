@@ -1,0 +1,10 @@
+[Unit]
+Description=Gault expired usage identifiers cleanup
+After=Gault.service
+Requires=Gault.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/Gault
+ExecStart=/usr/bin/docker compose --env-file .env -f infra/compose.yaml exec -T api python -m app.jobs.weekly_report --cleanup-only
+UMask=0077

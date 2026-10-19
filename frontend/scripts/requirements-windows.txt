@@ -1,0 +1,5 @@
+# Только Windows-тесты, CPython 3.13 x64/arm64; runtime Gault не зависит от pywinpty.
+# Официальные wheels PyPI, проверены 19.10.2026. Устанавливать с --only-binary=:all: --require-hashes.
+pywinpty==3.1.0 ; sys_platform == "win32" \
+    --hash=sha256:cc51bc690f58a969eab7dcc8d070321187ed47d5f076edc3b4a56076b38831f3 \
+    --hash=sha256:3670cd05447e56836301620e92dfdd3ef40408cfb59f2ce6290c66c9986b53ef

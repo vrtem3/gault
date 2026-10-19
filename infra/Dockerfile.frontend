@@ -1,0 +1,23 @@
+FROM node:24-bookworm-slim@sha256:a5f4366e834695d5f363b920c104953a535d3a9864d1bdf74566a0ebe01daee5 AS build
+WORKDIR /build/frontend
+COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci
+COPY frontend ./
+ARG PUBLIC_CIPHER_ORIGIN=https://gault.ru
+ARG PUBLIC_ACCOUNT_ORIGIN=https://account.gault.ru
+ARG PUBLIC_GITHUB_URL=
+ARG PUBLIC_MOBILE_LIMIT_MB=100
+ARG PUBLIC_FALLBACK_LIMIT_MB=100
+ARG PUBLIC_REPORT_TIMEZONE=Asia/Yekaterinburg
+ENV PUBLIC_CIPHER_ORIGIN=$PUBLIC_CIPHER_ORIGIN PUBLIC_ACCOUNT_ORIGIN=$PUBLIC_ACCOUNT_ORIGIN \
+    PUBLIC_GITHUB_URL=$PUBLIC_GITHUB_URL PUBLIC_MOBILE_LIMIT_MB=$PUBLIC_MOBILE_LIMIT_MB \
+    PUBLIC_FALLBACK_LIMIT_MB=$PUBLIC_FALLBACK_LIMIT_MB PUBLIC_REPORT_TIMEZONE=$PUBLIC_REPORT_TIMEZONE
+# Сохранённый полный контейнерный вариант для будущего этапа кабинета.
+RUN npm run build && npm run build:account
+
+FROM caddy:2-alpine@sha256:d8542f48d34a9cf4e4c11a478865229840e87e4c96ea3f439101f31a5d35f75f
+COPY --from=build /build/frontend/dist /srv/cipher
+COPY --from=build /build/frontend/dist-account /srv/account
+COPY infra/Caddyfile /etc/caddy/Caddyfile
+RUN mkdir -p /data/caddy /config/caddy && chown -R 10001:10001 /data /config
+USER 10001:10001

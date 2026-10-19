@@ -1,0 +1,9 @@
+[Unit]
+Description=Gault TLS certificate renewal
+Wants=network-online.target
+After=network-online.target nginx.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/certbot renew --quiet --non-interactive --config-dir /etc/letsencrypt-gault --work-dir /var/lib/letsencrypt-gault --logs-dir /var/log/letsencrypt-gault --deploy-hook "/usr/sbin/nginx -t && /usr/bin/systemctl reload nginx"
+UMask=0077

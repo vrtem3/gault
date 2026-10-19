@@ -1,0 +1,14 @@
+FROM python:3.13-slim-bookworm@sha256:a1165e272e578941b84abc79e4ab38a0305cd12803a5c4247979ac7655f4d641
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+WORKDIR /app
+COPY backend/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --require-hashes -r requirements.txt \
+    && groupadd --gid 10001 app \
+    && useradd --uid 10001 --gid app --no-create-home app \
+    && mkdir /data && chown app:app /data && chmod 700 /data
+COPY --chown=app:app backend/app ./app
+COPY --chown=app:app backend/alembic ./alembic
+COPY --chown=app:app backend/alembic.ini ./alembic.ini
+COPY --chown=app:app LICENSE THIRD_PARTY_NOTICES.md ./
+USER 10001:10001
+CMD ["sh", "-c", "umask 077 && python -m alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 1 --no-access-log --proxy-headers --forwarded-allow-ips='*'"]

@@ -1,0 +1,45 @@
+name: gault-dev
+services:
+  api:
+    build: {context: .., dockerfile: infra/Dockerfile.api}
+    environment:
+      ENVIRONMENT: development
+      SECRET_KEY: ${SECRET_KEY:?Заполните SECRET_KEY}
+      DATABASE_URL: sqlite+aiosqlite:////data/gault.db
+      PUBLIC_CIPHER_ORIGIN: http://localhost:8080
+      PUBLIC_ACCOUNT_ORIGIN: http://localhost:8081
+      COOKIE_SECURE: "false"
+      REPORT_TIMEZONE: ${REPORT_TIMEZONE:-Asia/Yekaterinburg}
+      SMTP_HOST: mailpit
+      SMTP_PORT: 1025
+      SMTP_TLS: none
+      SMTP_FROM: Gault <noreply@gault.ru>
+      ADMIN_REPORT_EMAIL: ${ADMIN_REPORT_EMAIL:-}
+    volumes: [database:/data]
+    depends_on: [mailpit]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+  web:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.frontend
+      args:
+        PUBLIC_CIPHER_ORIGIN: http://localhost:8080
+        PUBLIC_ACCOUNT_ORIGIN: http://localhost:8081
+        PUBLIC_GITHUB_URL: ${PUBLIC_GITHUB_URL:-}
+        PUBLIC_REPORT_TIMEZONE: ${REPORT_TIMEZONE:-Asia/Yekaterinburg}
+    ports: ["127.0.0.1:8080:80", "127.0.0.1:8081:81"]
+    volumes: ["./Caddyfile.local:/etc/caddy/Caddyfile:ro"]
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: [no-new-privileges:true]
+  mailpit:
+    image: axllent/mailpit:v1.31.6
+    environment:
+      MP_DISABLE_VERSION_CHECK: "true"
+      MP_SMTP_DISABLE_RDNS: "true"
+      MP_BLOCK_REMOTE_CSS_AND_FONTS: "true"
+      MP_ALLOWED_HOSTS: localhost,127.0.0.1
+    ports: ["127.0.0.1:8025:8025"]
+volumes:
+  database:

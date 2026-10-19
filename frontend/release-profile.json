@@ -1,0 +1,13 @@
+{
+  "node": "24.19.0",
+  "npm": "11.17.0",
+  "lockfileVersion": 3,
+  "publicEnv": {
+    "PUBLIC_CIPHER_ORIGIN": "https://gault.ru",
+    "PUBLIC_ACCOUNT_ORIGIN": "https://account.gault.ru",
+    "PUBLIC_GITHUB_URL": "https://github.com/vrtem3/gault",
+    "PUBLIC_MOBILE_LIMIT_MB": "100",
+    "PUBLIC_FALLBACK_LIMIT_MB": "100",
+    "PUBLIC_REPORT_TIMEZONE": "Asia/Yekaterinburg"
+  }
+}

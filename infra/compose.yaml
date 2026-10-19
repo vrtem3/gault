@@ -1,0 +1,73 @@
+name: gault
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.api
+    environment:
+      ENVIRONMENT: production
+      SECRET_KEY: ${SECRET_KEY:?Заполните SECRET_KEY в .env}
+      DATABASE_URL: sqlite+aiosqlite:////data/gault.db
+      PUBLIC_CIPHER_ORIGIN: https://${DOMAIN:-gault.ru}
+      PUBLIC_ACCOUNT_ORIGIN: https://account.${DOMAIN:-gault.ru}
+      COOKIE_SECURE: "true"
+      SESSION_DAYS: ${SESSION_DAYS:-14}
+      REPORT_TIMEZONE: ${REPORT_TIMEZONE:-Asia/Yekaterinburg}
+      ADMIN_REPORT_EMAIL: ${ADMIN_REPORT_EMAIL:-}
+      ADMIN_API_TOKEN: ${ADMIN_API_TOKEN:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-Gault <noreply@gault.ru>}
+      SMTP_TLS: ${SMTP_TLS:-starttls}
+    volumes:
+      - database:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 100
+    mem_limit: 512m
+    networks: [backend]
+  web:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.frontend
+      args:
+        PUBLIC_CIPHER_ORIGIN: https://${DOMAIN:-gault.ru}
+        PUBLIC_ACCOUNT_ORIGIN: https://account.${DOMAIN:-gault.ru}
+        PUBLIC_GITHUB_URL: ${PUBLIC_GITHUB_URL:-}
+        PUBLIC_MOBILE_LIMIT_MB: ${PUBLIC_MOBILE_LIMIT_MB:-100}
+        PUBLIC_FALLBACK_LIMIT_MB: ${PUBLIC_FALLBACK_LIMIT_MB:-100}
+        PUBLIC_REPORT_TIMEZONE: ${REPORT_TIMEZONE:-Asia/Yekaterinburg}
+    environment:
+      DOMAIN: ${DOMAIN:-gault.ru}
+      TLS_EMAIL: ${TLS_EMAIL:?Заполните TLS_EMAIL для HTTPS}
+    ports: ["80:80", "443:443", "443:443/udp"]
+    volumes:
+      - certificates:/data
+      - caddy_config:/config
+    restart: unless-stopped
+    read_only: true
+    tmpfs: [/tmp]
+    cap_drop: [ALL]
+    cap_add: [NET_BIND_SERVICE]
+    security_opt: [no-new-privileges:true]
+    pids_limit: 100
+    mem_limit: 256m
+    networks: [backend]
+    # Статика работает независимо от готовности API.
+volumes:
+  database:
+  certificates:
+  caddy_config:
+networks:
+  backend:

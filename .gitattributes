@@ -1,0 +1,8 @@
+# Контрольные контейнеры и исходники остаются побайтово прежними при checkout на Windows.
+/frontend/tests/fixtures/compatibility/**/*.age -text
+/frontend/tests/fixtures/compatibility/**/*.bin -text
+/frontend/tests/fixtures/compatibility/**/manifest.json text eol=lf
+
+# Словари участвуют в криптографических фразах/проверках и имеют опубликованные SHA-256.
+/frontend/src/features/passphrase/eff-words.txt text eol=lf
+/backend/app/data/*.txt text eol=lf

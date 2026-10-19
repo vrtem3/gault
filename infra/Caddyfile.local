@@ -1,0 +1,33 @@
+{
+	admin off
+	auto_https off
+}
+
+http://:80 {
+	root * /srv/cipher
+	header {
+		Referrer-Policy no-referrer
+		X-Content-Type-Options nosniff
+	}
+	route {
+		@sw path /sw.js
+		header @sw Content-Security-Policy "default-src 'none'; script-src 'self'; connect-src 'self'"
+		@document not path /sw.js
+		header @document Content-Security-Policy "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob:; font-src 'self'; connect-src 'none'; worker-src 'self'; manifest-src 'self'; frame-src http://localhost:8081; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+		file_server
+	}
+}
+
+http://:81 {
+	@api path /api/*
+	handle @api {
+		request_body {
+			max_size 8KB
+		}
+		reverse_proxy api:8000
+	}
+	handle {
+		root * /srv/account
+		file_server
+	}
+}

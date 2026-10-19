@@ -1,0 +1,97 @@
+{
+  "FiloSottile/age": {
+    "tag": "v1.3.2",
+    "assets": [
+      {
+        "name": "age-v1.3.2-darwin-amd64.tar.gz",
+        "url": "https://github.com/FiloSottile/age/releases/download/v1.3.2/age-v1.3.2-darwin-amd64.tar.gz",
+        "digest": "sha256:1d1e4bc66e1427edad7739ae7616157de0e79db8b6d2a1497d7d9925fb06a539"
+      },
+      {
+        "name": "age-v1.3.2-darwin-arm64.tar.gz",
+        "url": "https://github.com/FiloSottile/age/releases/download/v1.3.2/age-v1.3.2-darwin-arm64.tar.gz",
+        "digest": "sha256:e2020b073c44f692685a24d6abc378817eb81ffaaf49fd0531ef8565f767f2f5"
+      },
+      {
+        "name": "age-v1.3.2-linux-amd64.tar.gz",
+        "url": "https://github.com/FiloSottile/age/releases/download/v1.3.2/age-v1.3.2-linux-amd64.tar.gz",
+        "digest": "sha256:cbe24006683f8eb669266162894b9a522a1af52f2665fbc63a4bb032ed26ac10"
+      },
+      {
+        "name": "age-v1.3.2-linux-arm.tar.gz",
+        "url": "https://github.com/FiloSottile/age/releases/download/v1.3.2/age-v1.3.2-linux-arm.tar.gz",
+        "digest": "sha256:0ceba62c92701b30b3336abf064714c1a6ea5fa0c75ee367ce36d4f9c0f8e6ce"
+      },
+      {
+        "name": "age-v1.3.2-linux-arm64.tar.gz",
+        "url": "https://github.com/FiloSottile/age/releases/download/v1.3.2/age-v1.3.2-linux-arm64.tar.gz",
+        "digest": "sha256:6b8dc4333c53a5a57c9e5834e3a48f92605d7154014cd07269ff3327db5d37f4"
+      },
+      {
+        "name": "age-v1.3.2-windows-amd64.zip",
+        "url": "https://github.com/FiloSottile/age/releases/download/v1.3.2/age-v1.3.2-windows-amd64.zip",
+        "digest": "sha256:f48d8f8f9ebe903ab5027ed067652f2cc1db94bc206976430133b905dcd8e8c7"
+      }
+    ]
+  },
+  "str4d/rage": {
+    "tag": "v0.12.1",
+    "assets": [
+      {
+        "name": "rage-v0.12.1-arm64-darwin.tar.gz",
+        "url": "https://github.com/str4d/rage/releases/download/v0.12.1/rage-v0.12.1-arm64-darwin.tar.gz",
+        "digest": "sha256:25478bfca7085c7bf59e9f552907d4d0f4635e8de501b0b3553949edef39053e"
+      },
+      {
+        "name": "rage-v0.12.1-arm64-linux.tar.gz",
+        "url": "https://github.com/str4d/rage/releases/download/v0.12.1/rage-v0.12.1-arm64-linux.tar.gz",
+        "digest": "sha256:d6814986f9fb0c62bdd4f40a3672468ef3d64d0a3e894ffceb6d1a618309964b"
+      },
+      {
+        "name": "rage-v0.12.1-x86_64-darwin.tar.gz",
+        "url": "https://github.com/str4d/rage/releases/download/v0.12.1/rage-v0.12.1-x86_64-darwin.tar.gz",
+        "digest": "sha256:31697f501b433b6b7bbe75df4536b6c22a11ab164c542d1fdfa7af54b1e7e38e"
+      },
+      {
+        "name": "rage-v0.12.1-x86_64-linux.tar.gz",
+        "url": "https://github.com/str4d/rage/releases/download/v0.12.1/rage-v0.12.1-x86_64-linux.tar.gz",
+        "digest": "sha256:c5d7ab41fbf1213590e89721fd2b8eb122e84518c155ce35866f1c5759a3a29f"
+      },
+      {
+        "name": "rage-v0.12.1-x86_64-windows.zip",
+        "url": "https://github.com/str4d/rage/releases/download/v0.12.1/rage-v0.12.1-x86_64-windows.zip",
+        "digest": "sha256:da5b8111c8f097c7822df505ad504696e4891ff8adec06a39171f8d717590b2c"
+      }
+    ]
+  },
+  "axllent/mailpit": {
+    "tag": "v1.31.6",
+    "assets": [
+      {
+        "name": "mailpit-darwin-amd64.tar.gz",
+        "url": "https://github.com/axllent/mailpit/releases/download/v1.31.6/mailpit-darwin-amd64.tar.gz",
+        "digest": "sha256:2f89ed77d2e6623bf700de42236858d10dde1ba96a222c9dbdefd33fa094a6f3"
+      },
+      {
+        "name": "mailpit-darwin-arm64.tar.gz",
+        "url": "https://github.com/axllent/mailpit/releases/download/v1.31.6/mailpit-darwin-arm64.tar.gz",
+        "digest": "sha256:1411270aa8fd7f4fb0cc358318754d7bb7c2c30bfd70572dd12d05a53e956373"
+      },
+      {
+        "name": "mailpit-linux-amd64.tar.gz",
+        "url": "https://github.com/axllent/mailpit/releases/download/v1.31.6/mailpit-linux-amd64.tar.gz",
+        "digest": "sha256:10fa12ccc610f653d4ed4df848c1817f9935dcf4e9a6a458a19ab0fa02093f91"
+      },
+      {
+        "name": "mailpit-linux-arm.tar.gz",
+        "url": "https://github.com/axllent/mailpit/releases/download/v1.31.6/mailpit-linux-arm.tar.gz",
+        "digest": "sha256:9238a4c7a01ba6070e2bfdacb44f8881aac1611b4a597ab549780f850fd47776"
+      },
+      {
+        "name": "mailpit-linux-arm64.tar.gz",
+        "url": "https://github.com/axllent/mailpit/releases/download/v1.31.6/mailpit-linux-arm64.tar.gz",
+        "digest": "sha256:de07955b783236d9129da76da9a5970f1777834a18b2c07611de957be784dafe"
+      }
+    ]
+  }
+}

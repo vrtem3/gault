@@ -1,0 +1,10 @@
+[Unit]
+Description=Gault report for the completed week
+
+[Timer]
+OnCalendar=Mon *-*-* 00:10:00 Asia/Yekaterinburg
+Persistent=true
+Unit=Gault-weekly-report.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,18 @@
+[Unit]
+Description=Gault web platform
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/Gault
+ExecStart=/usr/bin/docker compose --env-file .env -f infra/compose.yaml up -d --remove-orphans
+ExecStop=/usr/bin/docker compose --env-file .env -f infra/compose.yaml stop
+TimeoutStartSec=180
+TimeoutStopSec=60
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

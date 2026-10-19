@@ -1,0 +1,23 @@
+[Unit]
+Description=Gault weekly aggregate email report
+After=Gault.service
+Requires=Gault.service
+
+[Service]
+Type=oneshot
+User=gault
+Group=gault
+WorkingDirectory=/opt/Gault/backend
+EnvironmentFile=/etc/Gault/Gault.env
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/Gault/.venv/bin/python -m app.jobs.weekly_report
+StateDirectory=Gault
+StateDirectoryMode=0700
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+MemoryMax=128M
+CPUQuota=25%
+Nice=10

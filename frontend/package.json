@@ -1,0 +1,58 @@
+{
+  "name": "gault",
+  "version": "0.1.1",
+  "private": true,
+  "packageManager": "npm@11.17.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "dev:account": "vite --config vite.account.config.ts --host 127.0.0.1",
+    "build": "node scripts/licenses.mjs && tsc --noEmit && vite build && node scripts/release-hashes.mjs",
+    "build:account": "vite build --config vite.account.config.ts && node scripts/release-hashes.mjs dist-account",
+    "preview": "vite preview --host 127.0.0.1",
+    "preview:account": "vite preview --config vite.account.config.ts --host 127.0.0.1",
+    "test": "vitest run",
+    "test:fuzz": "vitest run tests/unit/age-fuzz.test.ts",
+    "test:fuzz:extended": "node scripts/fuzz-campaign.mjs",
+    "test:repro": "node scripts/reproducible-build.mjs",
+    "check:artifact": "node scripts/artifact-check.mjs",
+    "check:dependencies": "node scripts/dependency-audit.mjs",
+    "check:release": "node scripts/release-check.mjs",
+    "test:e2e": "playwright test",
+    "test:interop": "node scripts/interop.mjs",
+    "test:compat": "playwright test --config playwright.compat.config.ts",
+    "test:large": "node scripts/large-file.mjs",
+    "test:streaming": "node scripts/large-file.mjs --smoke",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "1.5.0",
+    "@zxcvbn-ts/core": "4.2.0",
+    "@zxcvbn-ts/language-common": "4.1.3",
+    "@zxcvbn-ts/language-en": "4.1.1",
+    "@zxcvbn-ts/language-ru": "4.1.0",
+    "age-encryption": "0.3.1",
+    "class-variance-authority": "0.7.1",
+    "clsx": "2.1.1",
+    "lucide-react": "1.59.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "tailwind-merge": "3.7.0"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "26.6.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.2",
+    "tailwindcss": "4.3.3",
+    "typescript": "7.0.2",
+    "vite": "8.3.4",
+    "vitest": "5.0.5"
+  }
+}
