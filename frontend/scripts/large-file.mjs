@@ -24,6 +24,7 @@ const lockPath = join(root, '.tools/large-test.lock');
 const lock = await open(lockPath, 'wx');
 let directory;
 let browser;
+let persistentContext;
 let monitor;
 let sampling;
 let cancelled = false;
@@ -75,7 +76,15 @@ try {
   assert(available > required, 'Недостаточно свободного диска под вход, два результата, staging и резерв');
   directory = await mkdtemp(join(root, '.tools/gault-streaming-'));
   // Сигналами владеет наш finally: встроенный SIGINT Playwright иначе завершает Node до очистки lock.
-  browser = await chromium.launch({ headless: true, handleSIGINT: false, handleSIGTERM: false, handleSIGHUP: false });
+  const launchOptions = { headless: true, handleSIGINT: false, handleSIGTERM: false, handleSIGHUP: false };
+  if (smoke) browser = await chromium.launch(launchOptions);
+  else {
+    // Отдельный дисковый профиль не использует пользовательский Chrome или хранилище incognito.
+    persistentContext = await chromium.launchPersistentContext(join(directory, 'chromium-profile'), launchOptions);
+    browser = persistentContext.browser();
+    assert(browser, 'Не получен Chromium отдельного тестового профиля');
+  }
+  report.browserProfile = smoke ? 'isolated incognito' : 'isolated normal persistent profile in test directory';
   assert(!cancelled, 'Малый тест прерван пользователем');
   report.browser = browser.version();
   report.memoryMethod = os.platform() === 'win32' ? 'Sum of browser process WorkingSet64 (shared pages may be counted twice)' : 'Sum of browser process RSS from ps (shared pages may be counted twice)';
@@ -104,14 +113,18 @@ try {
   monitor = setInterval(() => {
     if (!sampling) sampling = sample().catch(() => { samplingErrors.push({ elapsedMs: Date.now() - started, phase }); }).finally(() => { sampling = undefined; });
   }, 250);
-  const page = await browser.newPage();
+  const page = await (persistentContext || browser).newPage();
   await page.addInitScript(() => { window.showSaveFilePicker = async (options) => (await navigator.storage.getDirectory()).getFileHandle(options.suggestedName, { create: true }); });
   await page.goto('http://localhost:5173');
   await page.getByText('Готово к работе без интернета', { exact: true }).waitFor();
   await page.waitForLoadState('networkidle');
-  const quota = await page.evaluate(() => navigator.storage.estimate());
-  report.opfsPreflight = { quotaBytes: quota.quota ?? null, usageBytes: quota.usage ?? null, requiredBytes: Math.max(...sizes) * 3 + 1024 ** 2 };
-  assert(typeof quota.quota === 'number' && typeof quota.usage === 'number', 'Браузер не сообщил квоту OPFS');
+  const estimate = await page.evaluate(() => navigator.storage.estimate());
+  // Web-оценка Chromium может быть искусственным usage + 10 GiB; CDP здесь только читает квоту.
+  const quotaSession = await page.context().newCDPSession(page);
+  const quota = await quotaSession.send('Storage.getUsageAndQuota', { origin: new URL(page.url()).origin });
+  await quotaSession.detach();
+  report.opfsPreflight = { quotaBytes: quota.quota, usageBytes: quota.usage, quotaOverrideActive: quota.overrideActive, reportedEstimateQuotaBytes: estimate.quota ?? null, source: 'CDP Storage.getUsageAndQuota, read-only', requiredBytes: Math.max(...sizes) * 3 + 1024 ** 2 };
+  assert(Number.isFinite(quota.quota) && Number.isFinite(quota.usage) && quota.overrideActive === false, 'Не получена действительная квота OPFS без override');
   assert(quota.quota - quota.usage > report.opfsPreflight.requiredBytes, 'Недостаточно квоты OPFS; свободное место ОС не заменяет квоту');
   const requests = [];
   const requestEntries = new WeakMap();
@@ -206,7 +219,8 @@ try {
 } finally {
   clearInterval(monitor);
   if (sampling) await sampling;
-  if (browser) await browser.close().catch(() => {});
+  if (persistentContext) await persistentContext.close().catch(() => {});
+  else if (browser) await browser.close().catch(() => {});
   process.removeListener('SIGINT', interrupted); process.removeListener('SIGTERM', interrupted);
   try {
     await mkdir(join(root, 'artifacts'), { recursive: true });
